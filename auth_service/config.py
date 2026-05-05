@@ -1,4 +1,5 @@
+SECRET_KEY = "super_secret_key"
 
-class config:
-    DATABASE_URI = 'postgresql://user:password@host:port/database'
-    
+class Config:
+    SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://postgres:12345@localhost:5432/microservices_db"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
