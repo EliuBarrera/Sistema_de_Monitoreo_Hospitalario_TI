@@ -1,0 +1,4 @@
+# Para Python
+echo "__pycache__/" >> .gitignore
+echo ".env" >> .gitignore
+echo "venv/" >> .gitignore
