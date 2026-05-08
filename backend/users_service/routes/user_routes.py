@@ -1,31 +1,49 @@
 from flask import Blueprint, request, jsonify
-from controllers.user_controller import get_all_users, get_user_by_id, create_user, update_user, delete_user
+from controllers.users_controller import (
+    get_all_users, get_user, create_user, update_user, delete_user,
+    get_all_roles, create_role
+)
 
-user_bp = Blueprint("user_bp", __name__)
+users_bp = Blueprint("users_bp", __name__)
 
-@user_bp.route("/", methods=["GET"])
-def get_users_route():
+# ─── USERS ───────────────────────────────────────────────────────────────────
+
+@users_bp.route("/", methods=["GET"])
+def list_users():
     result, status = get_all_users()
     return jsonify(result), status
 
-@user_bp.route("/<int:user_id>", methods=["GET"])
-def get_user_route(user_id):
-    result, status = get_user_by_id(user_id)
-    return jsonify(result), status
-
-@user_bp.route("/", methods=["POST"])
-def create_user_route():
+@users_bp.route("/", methods=["POST"])
+def new_user():
     data = request.get_json()
     result, status = create_user(data)
     return jsonify(result), status
 
-@user_bp.route("/<int:user_id>", methods=["PUT"])
-def update_user_route(user_id):
+@users_bp.route("/<int:user_id>", methods=["GET"])
+def detail_user(user_id):
+    result, status = get_user(user_id)
+    return jsonify(result), status
+
+@users_bp.route("/<int:user_id>", methods=["PUT"])
+def edit_user(user_id):
     data = request.get_json()
     result, status = update_user(user_id, data)
     return jsonify(result), status
 
-@user_bp.route("/<int:user_id>", methods=["DELETE"])
-def delete_user_route(user_id):
+@users_bp.route("/<int:user_id>", methods=["DELETE"])
+def remove_user(user_id):
     result, status = delete_user(user_id)
+    return jsonify(result), status
+
+# ─── ROLES ───────────────────────────────────────────────────────────────────
+
+@users_bp.route("/roles", methods=["GET"])
+def list_roles():
+    result, status = get_all_roles()
+    return jsonify(result), status
+
+@users_bp.route("/roles", methods=["POST"])
+def new_role():
+    data = request.get_json()
+    result, status = create_role(data)
     return jsonify(result), status
