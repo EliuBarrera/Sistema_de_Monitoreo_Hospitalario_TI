@@ -6,7 +6,7 @@ from controllers.users_controller import (
 
 users_bp = Blueprint("users_bp", __name__)
 
-# ─── USERS ───────────────────────────────────────────────────────────────────
+# USERS
 
 @users_bp.route("/", methods=["GET"])
 def list_users():
@@ -35,7 +35,7 @@ def remove_user(user_id):
     result, status = delete_user(user_id)
     return jsonify(result), status
 
-# ─── ROLES ───────────────────────────────────────────────────────────────────
+# ROLES
 
 @users_bp.route("/roles", methods=["GET"])
 def list_roles():
