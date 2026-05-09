@@ -5,22 +5,20 @@ import datetime
 # ALERT SEVERITIES
 
 def get_all_severities():
-    sevs = AlertSeverity.query.order_by(AlertSeverity.level).all()
+    sevs = AlertSeverity.query.all()
     return [
-        {"id": s.id, "name": s.name, "level": s.level}
+        {"id": s.id, "name": s.name}
         for s in sevs
     ], 200
 
 def create_severity(data):
     name = data.get("name")
-    level = data.get("level")
-    if not name or level is None:
-        return {"error": "name y level son requeridos"}, 400
+    if not name:
+        return {"error": "name es requerido"}, 400
     if AlertSeverity.query.filter_by(name=name).first():
         return {"error": "La severidad ya existe"}, 400
     new_sev = AlertSeverity(
-        name=name,
-        level=int(level)
+        name=name
     )
     db.session.add(new_sev)
     db.session.commit()
@@ -61,14 +59,20 @@ def update_alert(alert_id, data):
     a = Alert.query.get(alert_id)
     if not a:
         return {"error": "Alerta no encontrada"}, 404
+    
     if "status" in data:
-        a.status = data["status"]
-        if data["status"] == "resuelta" and not a.resolved_at:
+        new_status = data["status"]
+        if new_status == "resuelta" and not a.resolved_at:
             a.resolved_at = datetime.datetime.utcnow()
+        elif new_status != "resuelta":
+            a.resolved_at = None
+        a.status = new_status
+
     if "message" in data:
         a.message = data["message"]
     if "severity_id" in data:
         a.severity_id = data["severity_id"]
+    
     db.session.commit()
     return {"message": "Alerta actualizada"}, 200
 
@@ -85,6 +89,7 @@ def _serialize(a):
         "id": a.id,
         "device_id": a.device_id,
         "severity_id": a.severity_id,
+        "severity": a.severity.name if a.severity else None,
         "message": a.message,
         "status": a.status,
         "created_at": a.created_at.isoformat() if a.created_at else None,
