@@ -9,4 +9,3 @@ class Location(db.Model):
     room = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(50), nullable=False)
     parent_location_id = db.Column(db.Integer, db.ForeignKey("location.id"))
-    
