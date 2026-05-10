@@ -2,10 +2,15 @@ from flask import Flask, request, jsonify
 import requests
 from functools import wraps
 import jwt
+from dotenv import load_dotenv
+import os
+
 
 app = Flask(__name__)
 app.json.sort_keys = False
-SECRET_KEY = "super_secret_key_please_change_me"
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Microservice configuration
 SERVICE_URLS = {
@@ -37,16 +42,39 @@ def token_required(f):
 
     return decorated
 
-# AUHT ----------------------------------------
+# AUTH ----------------------------------------
 @app.route("/auth/register", methods=["POST"])
 def register():
-    response = requests.post(f"{SERVICE_URLS['auth']}/register", json=request.json)
-    return jsonify(response.json()), response.status_code
+    response = requests.post(
+        f"{SERVICE_URLS['auth']}/register",
+        json=request.json
+    )
+
+    try:
+        return jsonify(response.json()), response.status_code
+    except Exception:
+        return jsonify({
+            "error": "La respuesta del servicio auth no es JSON",
+            "status_code": response.status_code,
+            "response": response.text
+        }), 500
+
 
 @app.route("/auth/login", methods=["POST"])
 def login():
-    response = requests.post(f"{SERVICE_URLS['auth']}/login", json=request.json)
-    return jsonify(response.json()), response.status_code
+    response = requests.post(
+        f"{SERVICE_URLS['auth']}/login",
+        json=request.json
+    )
+
+    try:
+        return jsonify(response.json()), response.status_code
+    except Exception:
+        return jsonify({
+            "error": "La respuesta del servicio auth no es JSON",
+            "status_code": response.status_code,
+            "response": response.text
+        }), 500
 
 # GET BY ID (GET), UPDATE (PUT), DELETE (DELETE)
 @app.route("/users/<int:id>", methods=["GET", "PUT", "DELETE"])
@@ -73,6 +101,8 @@ def locations():
         
     if request.method == "POST":
         response = requests.post(f"{SERVICE_URLS['locations']}", json=request.json)
+        print("STATUS:", response.status_code)
+        print("TEXT:", response.text)
         return jsonify(response.json()), response.status_code
 
 # GET BY ID (GET), UPDATE (PUT), DELETE (DELETE)

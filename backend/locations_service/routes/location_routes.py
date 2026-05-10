@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from controllers.location_controller import *
+from controller.location_controller import *
 
-location_bp = Blueprint('locations', __name__)
+location_bp = Blueprint('locations_bp', __name__)
 
 @location_bp.route('/locations', methods=['GET'])
 def get_locations_route():

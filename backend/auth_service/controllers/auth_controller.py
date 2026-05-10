@@ -15,9 +15,15 @@ def register(data):
     if User.query.filter_by(email=email).first():
         return {"error": "El email ya está registrado"}, 400
 
+    role = Role.query.get(role_id)
+
+    if not role:
+        return {"error": "El rol no existe"}, 404
+
     hashed_password = generate_password_hash(password)
 
     new_user = User(
+        username=username,
         email=email,
         password=hashed_password,
         role_id=role_id
