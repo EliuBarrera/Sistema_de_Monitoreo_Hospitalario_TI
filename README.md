@@ -22,5 +22,5 @@ Verifica firma HS256 con Config.SECRET_KEY
 Si falta/expira/inválido responde 401
 Cómo ejecutarlo
 
-Corre backend/devices_service/app.py y levanta en puerto 5005
+Corre backend/devices_service/app.py y levanta en puerto 5003
 Crea tablas con db.create_all() al iniciar (igual que users_service)
