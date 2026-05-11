@@ -1,4 +1,28 @@
-# Para Python
-echo "__pycache__/" >> .gitignore
-echo ".env" >> .gitignore
-echo "venv/" >> .gitignore
+# Bytecode / cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Entornos virtuales
+venv/
+.env/
+.venv/
+
+# Variables de entorno
+.env
+
+# Archivos de distribución
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
