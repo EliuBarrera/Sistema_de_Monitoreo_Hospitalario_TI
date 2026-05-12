@@ -157,6 +157,9 @@ El token se obtiene al hacer login exitoso (`POST /auth/login`).
 
 Registra un nuevo usuario en el sistema.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/72b4c019-fd59-414c-b0fd-9aa636c84105" />
+
+
 **Body (JSON):**
 ```json
 {
@@ -194,6 +197,8 @@ Registra un nuevo usuario en el sistema.
 #### `POST /auth/login` 🔓
 
 Autentica un usuario y devuelve un token JWT.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a4b0065b-2212-4048-be1a-f1ff568cbfd6" />
 
 **Body (JSON):**
 ```json
@@ -276,6 +281,9 @@ Elimina un usuario por ID.
 
 Lista todas las ubicaciones.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/01e3d908-d0d4-4848-b951-66c653fe0250" />
+
+
 **Respuesta `200`:**
 ```json
 [
@@ -296,6 +304,9 @@ Lista todas las ubicaciones.
 #### `POST /locations` 🔐
 
 Crea una nueva ubicación.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/47932e82-f96a-49d9-a59c-0cd40a0f6c6b" />
+
 
 **Body (JSON):**
 ```json
@@ -324,11 +335,16 @@ Crea una nueva ubicación.
 
 Obtiene una ubicación específica por ID.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8f0b0b46-ab62-440e-ac45-bd688f69a8c2" />
+
 ---
 
 #### `PUT /locations/<id>` 🔐
 
 Actualiza una ubicación.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0c3374ca-6677-4138-af21-893f5ef088a3" />
+
 
 **Body (JSON):** Mismos campos que `POST`, todos opcionales.
 
@@ -337,6 +353,8 @@ Actualiza una ubicación.
 #### `DELETE /locations/<id>` 🔐
 
 Elimina una ubicación por ID.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/860ee066-ff2b-400c-8191-af064efd4976" />
 
 ---
 
