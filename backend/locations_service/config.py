@@ -1,5 +1,8 @@
-class Config:
-    SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://postgres:123456@localhost:5432/microservices_db"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+from dotenv import load_dotenv
+import os
 
-SECRET_KEY = "super_secret_key"
+class Config:
+    load_dotenv()
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False

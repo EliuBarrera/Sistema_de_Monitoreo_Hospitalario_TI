@@ -78,6 +78,8 @@ def login():
             "response": response.text
         }), 500
 
+# USERS ----------------------------------------    
+
 # GET BY ID (GET), UPDATE (PUT), DELETE (DELETE)
 @app.route("/users/<int:id>", methods=["GET", "PUT", "DELETE"])
 @token_required

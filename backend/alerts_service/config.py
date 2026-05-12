@@ -1,5 +1,8 @@
-SECRET_KEY = "hospital_san_rafael_secret_2024"
+from dotenv import load_dotenv
+import os
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://postgres:12345@db:5432/hospital_db"
+    load_dotenv()
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
