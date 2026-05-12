@@ -157,8 +157,7 @@ El token se obtiene al hacer login exitoso (`POST /auth/login`).
 
 Registra un nuevo usuario en el sistema.
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/72b4c019-fd59-414c-b0fd-9aa636c84105" />
-
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4cef65a7-6d65-43f7-8013-88a8142ff8fe" />
 
 **Body (JSON):**
 ```json
@@ -366,6 +365,8 @@ Elimina una ubicación por ID.
 
 Lista todos los dispositivos. Soporta filtros por query params.
 
+
+
 **Query Params (opcionales):**
 
 | Parámetro | Tipo | Ejemplo | Descripción |
@@ -401,6 +402,8 @@ GET /devices?status=active&device_type_id=1
 #### `POST /devices` 🔐
 
 Registra un nuevo dispositivo médico.
+
+
 
 **Body (JSON):**
 ```json
