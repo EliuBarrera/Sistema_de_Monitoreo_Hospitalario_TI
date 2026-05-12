@@ -18,6 +18,7 @@
   - [Users (vía Gateway)](#users-vía-gateway)
   - [Locations (vía Gateway)](#locations-vía-gateway)
   - [Devices (vía Gateway)](#devices-vía-gateway)
+  - [Device Types (vía Gateway)](#device-types-vía-gateway)
   - [Metrics (vía Gateway)](#metrics-vía-gateway)
 - [Microservicios Internos](#microservicios-internos)
   - [Auth Service — Puerto 5001](#auth-service--puerto-5001)
@@ -45,10 +46,10 @@ Cliente (REST)
       │
       ▼
 ┌─────────────────────┐
-│   API Gateway :5000  │  ← Valida JWT · Enruta tráfico
+│ API Gateway :5000  │  ← Valida JWT · Enruta tráfico
 └──────────┬──────────┘
            │
-   ┌───────┼────────────────────────┐
+   ┌───────┼───────────────────────────────────────────────┐
    ▼       ▼           ▼           ▼           ▼           ▼
 :5001    :5002       :5003       :5004       :5005       :5006
  Auth    Users      Devices   Locations   Metrics     Alerts
@@ -57,8 +58,8 @@ Service  Service    Service    Service    Service     Service
    └───────┴───────────┴───────────┴───────────┴───────────┘
                                │
                     ┌──────────▼──────────┐
-                    │   PostgreSQL :5432   │
-                    │  microservices_db    │
+                    │   PostgreSQL :5432  │
+                    │  microservices_db   │
                     └─────────────────────┘
 ```
 
@@ -445,6 +446,98 @@ Actualiza los datos de un dispositivo.
 #### `DELETE /devices/<device_id>` 🔐
 
 Elimina un dispositivo por ID.
+
+---
+
+### Device Types (vía Gateway)
+
+> Prefix: `/device-types` — Todos requieren 🔐
+
+Permite gestionar los **tipos de dispositivos médicos** directamente desde el Gateway, enrutando al `devices_service` (puerto `5003`).
+
+#### `GET /device-types` 🔐
+
+Lista todos los tipos de dispositivo registrados.
+
+**Respuesta `200`:**
+```json
+[
+  {
+    "id": 1,
+    "name": "Monitor Cardiaco",
+    "description": "Dispositivo para monitoreo de frecuencia cardíaca"
+  },
+  {
+    "id": 2,
+    "name": "Oxímetro",
+    "description": "Mide saturación de oxígeno en sangre"
+  }
+]
+```
+
+---
+
+#### `POST /device-types` 🔐
+
+Crea un nuevo tipo de dispositivo.
+
+**Body (JSON):**
+```json
+{
+  "name": "Termómetro Digital",
+  "description": "Sensor de temperatura corporal"
+}
+```
+
+| Campo | Tipo | Requerido | Descripción |
+|---|---|---|---|
+| `name` | string | ✅ | Nombre único del tipo de dispositivo |
+| `description` | string | ❌ | Descripción del tipo |
+
+**Respuesta `201`:**
+```json
+{
+  "id": 3,
+  "name": "Termómetro Digital",
+  "description": "Sensor de temperatura corporal"
+}
+```
+
+---
+
+#### `GET /device-types/<type_id>` 🔐
+
+Obtiene un tipo de dispositivo específico por ID.
+
+**Respuesta `200`:**
+```json
+{
+  "id": 1,
+  "name": "Monitor Cardiaco",
+  "description": "Dispositivo para monitoreo de frecuencia cardíaca"
+}
+```
+
+---
+
+#### `PUT /device-types/<type_id>` 🔐
+
+Actualiza un tipo de dispositivo existente.
+
+**Body (JSON):** Mismos campos que `POST`, todos opcionales.
+```json
+{
+  "description": "Monitor ECG de 12 derivaciones"
+}
+```
+
+---
+
+#### `DELETE /device-types/<type_id>` 🔐
+
+Elimina un tipo de dispositivo por ID.
+
+> ⚠️ Si existen dispositivos asociados a este tipo, la eliminación puede fallar por integridad referencial.
 
 ---
 
