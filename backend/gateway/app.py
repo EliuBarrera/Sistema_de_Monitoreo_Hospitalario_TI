@@ -18,6 +18,7 @@ SERVICE_URLS = {
     "user": "http://localhost:5002/users",
     "locations": "http://localhost:5004/locations",
     "devices": "http://localhost:5003/devices",
+    "device_types": "http://localhost:5003/device-types",
     "metrics": "http://localhost:5005/metrics",
 }
 
@@ -146,6 +147,48 @@ def device_detail(device_id: int):
         response = requests.delete(f"{SERVICE_URLS['devices']}/{device_id}", headers=request.headers)
     return jsonify(response.json()), response.status_code
 
+# DEVICE TYPES ----------------------------------------
+
+@app.route("/device-types", methods=["GET", "POST"])
+@token_required
+def device_types():
+    if request.method == "GET":
+        response = requests.get(
+            f"{SERVICE_URLS['device_types']}/",
+            params=request.args
+        )
+        return jsonify(response.json()), response.status_code
+
+    response = requests.post(
+        f"{SERVICE_URLS['device_types']}/",
+        json=request.json,
+        headers=request.headers
+    )
+    return jsonify(response.json()), response.status_code
+
+
+@app.route("/device-types/<int:type_id>", methods=["GET", "PUT", "DELETE"])
+@token_required
+def device_type_detail(type_id: int):
+    if request.method == "GET":
+        response = requests.get(
+            f"{SERVICE_URLS['device_types']}/{type_id}"
+        )
+
+    elif request.method == "PUT":
+        response = requests.put(
+            f"{SERVICE_URLS['device_types']}/{type_id}",
+            json=request.json,
+            headers=request.headers
+        )
+
+    else:
+        response = requests.delete(
+            f"{SERVICE_URLS['device_types']}/{type_id}",
+            headers=request.headers
+        )
+
+    return jsonify(response.json()), response.status_code
 
 # METRICS ----------------------------------------
 
