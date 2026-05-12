@@ -49,10 +49,12 @@ def login(data):
     if not check_password_hash(user.password, password):
         return {"error": "Credenciales incorrectas"}, 401
 
+    role = Role.query.get(user.role_id)
+
     token = generate_token(user)
 
     return {
         "token": token,
         "user_id": user.id,
-        "role_id": user.role_id
+        "role": role.name
     }, 200
