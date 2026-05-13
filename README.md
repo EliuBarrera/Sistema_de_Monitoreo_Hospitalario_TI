@@ -46,7 +46,7 @@ Cliente (REST)
       │
       ▼
 ┌─────────────────────┐
-│ API Gateway :5000  │  ← Valida JWT · Enruta tráfico
+│  API Gateway :5000  │  ← Valida JWT · Enruta tráfico
 └──────────┬──────────┘
            │
    ┌───────┼───────────────────────────────────────────────┐
@@ -366,6 +366,7 @@ Elimina una ubicación por ID.
 
 Lista todos los dispositivos. Soporta filtros por query params.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9fadc621-2ab6-4b24-b1d6-c0aac3419463" />
 
 
 **Query Params (opcionales):**
@@ -404,7 +405,7 @@ GET /devices?status=active&device_type_id=1
 
 Registra un nuevo dispositivo médico.
 
-
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/06a7989a-197f-4519-bf52-17e80fd0552d" />
 
 **Body (JSON):**
 ```json
@@ -433,11 +434,15 @@ Registra un nuevo dispositivo médico.
 
 Obtiene un dispositivo específico por ID.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/3ada5cb8-958d-4b1d-9fc7-3c89bc3b3816" />
+
 ---
 
 #### `PUT /devices/<device_id>` 🔐
 
 Actualiza los datos de un dispositivo.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/26898bf2-dc11-4522-b119-9287909a3f1e" />
 
 **Body (JSON):** Mismos campos que `POST`, todos opcionales.
 
@@ -446,6 +451,8 @@ Actualiza los datos de un dispositivo.
 #### `DELETE /devices/<device_id>` 🔐
 
 Elimina un dispositivo por ID.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/415790ab-62b0-4f63-bd72-1c93285c9246" />
 
 ---
 
@@ -458,6 +465,8 @@ Permite gestionar los **tipos de dispositivos médicos** directamente desde el G
 #### `GET /device-types` 🔐
 
 Lista todos los tipos de dispositivo registrados.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d3b9d144-2f75-4911-970b-1f524a9d4872" />
 
 **Respuesta `200`:**
 ```json
@@ -480,6 +489,8 @@ Lista todos los tipos de dispositivo registrados.
 #### `POST /device-types` 🔐
 
 Crea un nuevo tipo de dispositivo.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b01452b6-e22a-4480-bad5-cd2e756ffa60" />
 
 **Body (JSON):**
 ```json
@@ -509,6 +520,8 @@ Crea un nuevo tipo de dispositivo.
 
 Obtiene un tipo de dispositivo específico por ID.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7c5fb9aa-62ef-48a2-8ddf-d36943885ba4" />
+
 **Respuesta `200`:**
 ```json
 {
@@ -524,6 +537,8 @@ Obtiene un tipo de dispositivo específico por ID.
 
 Actualiza un tipo de dispositivo existente.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6dbe9ef0-53aa-4bc0-a8b4-8f14e1e74d7d" />
+
 **Body (JSON):** Mismos campos que `POST`, todos opcionales.
 ```json
 {
@@ -537,6 +552,8 @@ Actualiza un tipo de dispositivo existente.
 
 Elimina un tipo de dispositivo por ID.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c2ed733b-c9ec-4a67-87da-70688039361a" />
+
 > ⚠️ Si existen dispositivos asociados a este tipo, la eliminación puede fallar por integridad referencial.
 
 ---
@@ -548,6 +565,8 @@ Elimina un tipo de dispositivo por ID.
 #### `GET /metrics` 🔐
 
 Lista todas las métricas. Soporta filtros por query params.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2b57220b-9e05-429b-b093-9873020daa6a" />
 
 **Query Params (opcionales):**
 
@@ -580,6 +599,8 @@ Lista todas las métricas. Soporta filtros por query params.
 
 Registra una nueva métrica clínica.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ea877c2f-2915-43a1-bc31-a9e8aef7eb29" />
+
 **Body (JSON):**
 ```json
 {
@@ -607,17 +628,23 @@ Registra una nueva métrica clínica.
 
 Obtiene una métrica específica por ID.
 
+   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2c6a252e-dc74-4d90-9a9c-bfec95f93bb8" />
+
 ---
 
 #### `PUT /metrics/<metric_id>` 🔐
 
 Actualiza una métrica existente.
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/462357bb-892c-4d2b-8757-c0e472d9f3f7" />
+
 ---
 
 #### `DELETE /metrics/<metric_id>` 🔐
 
 Elimina una métrica por ID.
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7d30bb52-972d-46b4-a7b7-a0f5ad7d3a92" />
 
 ---
 
