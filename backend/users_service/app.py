@@ -1,5 +1,5 @@
 from flask import Flask
-from routes.users_routes import users_bp
+from routes.user_routes import users_bp
 from config import Config
 from extensions import db
 

@@ -3,6 +3,7 @@ from extensions import db
 from utils.jwt_handler import generate_token
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 def register(data):
     username = data.get("username")
     email = data.get("email")
@@ -15,8 +16,10 @@ def register(data):
     if User.query.filter_by(email=email).first():
         return {"error": "El email ya está registrado"}, 400
 
-    role = Role.query.get(role_id)
+    if User.query.filter_by(username=username).first():
+        return {"error": "El username ya está en uso"}, 400
 
+    role = Role.query.get(role_id)
     if not role:
         return {"error": "El rol no existe"}, 404
 
@@ -32,7 +35,11 @@ def register(data):
     db.session.add(new_user)
     db.session.commit()
 
-    return {"message": "Usuario registrado exitosamente", "user_id": new_user.id}, 201
+    return {
+        "message": "Usuario registrado exitosamente",
+        "user_id": new_user.id
+    }, 201
+
 
 def login(data):
     email = data.get("email")
@@ -56,5 +63,5 @@ def login(data):
     return {
         "token": token,
         "user_id": user.id,
-        "role": role.name
+        "role": role.name if role else None
     }, 200

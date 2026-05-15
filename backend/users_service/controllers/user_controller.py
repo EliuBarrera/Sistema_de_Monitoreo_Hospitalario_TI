@@ -1,4 +1,4 @@
-from models.user_model import User, Role
+from models.user_model import User, Role  # user_model.py (antes userModel.py)
 from extensions import db
 from werkzeug.security import generate_password_hash
 

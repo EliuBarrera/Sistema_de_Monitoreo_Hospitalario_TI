@@ -5,24 +5,28 @@ import jwt
 from dotenv import load_dotenv
 import os
 
-
 app = Flask(__name__)
 app.json.sort_keys = False
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# Microservice configuration
+# ─── URLs de cada microservicio ─────────────────────────────────────────────
 SERVICE_URLS = {
-    "auth": "http://localhost:5001/auth",
-    "user": "http://localhost:5002/users",
-    "locations": "http://localhost:5004/locations",
-    "devices": "http://localhost:5003/devices",
-    "device_types": "http://localhost:5003/device-types",
-    "metrics": "http://localhost:5005/metrics",
+    "auth":         os.getenv("AUTH_SERVICE_URL",      "http://localhost:5001") + "/auth",
+    "users":        os.getenv("USERS_SERVICE_URL",     "http://localhost:5002") + "/users",
+    "devices":      os.getenv("DEVICES_SERVICE_URL",   "http://localhost:5003") + "/devices",
+    "device_types": os.getenv("DEVICES_SERVICE_URL",   "http://localhost:5003") + "/device-types",
+    "locations":    os.getenv("LOCATIONS_SERVICE_URL", "http://localhost:5004") + "/locations",
+    "metrics":      os.getenv("METRICS_SERVICE_URL",   "http://localhost:5005") + "/metrics",
+    "alerts":       os.getenv("ALERTS_SERVICE_URL",    "http://localhost:5006") + "/alerts",
 }
 
-# JWT - Token Verification
+# ─── Cabeceras seguras para reenviar a los microservicios ───────────────────
+FORWARD_HEADERS = {"Content-Type": "application/json"}
+
+
+# ─── Middleware: verificación JWT ───────────────────────────────────────────
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -33,7 +37,7 @@ def token_required(f):
         try:
             token = auth_header.split(" ")[1]
             decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-            request.user = decoded  # opcional (para roles luego)
+            request.user = decoded
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token expirado"}), 401
         except jwt.InvalidTokenError:
@@ -45,174 +49,209 @@ def token_required(f):
 
     return decorated
 
-# AUTH ----------------------------------------
-@app.route("/auth/register", methods=["POST"])
-def register():
-    response = requests.post(
-        f"{SERVICE_URLS['auth']}/register",
-        json=request.json
-    )
 
+# ─── Helper: proxy genérico con manejo de errores ───────────────────────────
+def proxy(response):
     try:
         return jsonify(response.json()), response.status_code
     except Exception:
         return jsonify({
-            "error": "La respuesta del servicio auth no es JSON",
+            "error": "Respuesta no JSON del microservicio",
             "status_code": response.status_code,
-            "response": response.text
-        }), 500
+            "body": response.text[:500]
+        }), 502
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# AUTH
+# ════════════════════════════════════════════════════════════════════════════
+
+@app.route("/auth/register", methods=["POST"])
+def auth_register():
+    response = requests.post(f"{SERVICE_URLS['auth']}/register", json=request.json)
+    return proxy(response)
 
 
 @app.route("/auth/login", methods=["POST"])
-def login():
-    response = requests.post(
-        f"{SERVICE_URLS['auth']}/login",
-        json=request.json
-    )
+def auth_login():
+    response = requests.post(f"{SERVICE_URLS['auth']}/login", json=request.json)
+    return proxy(response)
 
-    try:
-        return jsonify(response.json()), response.status_code
-    except Exception:
-        return jsonify({
-            "error": "La respuesta del servicio auth no es JSON",
-            "status_code": response.status_code,
-            "response": response.text
-        }), 500
 
-# USERS ----------------------------------------    
+# ════════════════════════════════════════════════════════════════════════════
+# USERS
+# ════════════════════════════════════════════════════════════════════════════
 
-# GET BY ID (GET), UPDATE (PUT), DELETE (DELETE)
-@app.route("/users/<int:id>", methods=["GET", "PUT", "DELETE"])
+@app.route("/users", methods=["GET", "POST"])
 @token_required
-def user_detail(id):
-    
-    if request.method == 'GET':
-        response = requests.get(f"{SERVICE_URLS['user']}/{id}")
-    elif request.method == 'PUT':
-        response = requests.put(f"{SERVICE_URLS['user']}/{id}", json=request.json)
-    elif request.method == 'DELETE':
-        response = requests.delete(f"{SERVICE_URLS['user']}/{id}")    
-    return jsonify(response.json()), response.status_code
+def users():
+    if request.method == "GET":
+        response = requests.get(f"{SERVICE_URLS['users']}/")
+    else:
+        response = requests.post(f"{SERVICE_URLS['users']}/", json=request.json)
+    return proxy(response)
 
-# LOCATIONS ----------------------------------------
 
-# METHODS: GET ALL (GET), CREATE (POST)
+@app.route("/users/<int:user_id>", methods=["GET", "PUT", "DELETE"])
+@token_required
+def user_detail(user_id):
+    url = f"{SERVICE_URLS['users']}/{user_id}"
+    if request.method == "GET":
+        response = requests.get(url)
+    elif request.method == "PUT":
+        response = requests.put(url, json=request.json)
+    else:
+        response = requests.delete(url)
+    return proxy(response)
+
+
+# ─── Roles (sub-recurso de users) ───────────────────────────────────────────
+
+@app.route("/users/roles", methods=["GET", "POST"])
+@token_required
+def user_roles():
+    url = f"{SERVICE_URLS['users']}/roles"
+    if request.method == "GET":
+        response = requests.get(url)
+    else:
+        response = requests.post(url, json=request.json)
+    return proxy(response)
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# LOCATIONS
+# ════════════════════════════════════════════════════════════════════════════
+
 @app.route("/locations", methods=["GET", "POST"])
 @token_required
 def locations():
     if request.method == "GET":
-        response = requests.get(f"{SERVICE_URLS['locations']}")
-        return jsonify(response.json()), response.status_code
-        
-    if request.method == "POST":
-        response = requests.post(f"{SERVICE_URLS['locations']}", json=request.json)
-        print("STATUS:", response.status_code)
-        print("TEXT:", response.text)
-        return jsonify(response.json()), response.status_code
+        response = requests.get(f"{SERVICE_URLS['locations']}/")
+    else:
+        response = requests.post(f"{SERVICE_URLS['locations']}/", json=request.json)
+    return proxy(response)
 
-# GET BY ID (GET), UPDATE (PUT), DELETE (DELETE)
-@app.route("/locations/<int:id>", methods=["GET", "PUT", "DELETE"])
+
+@app.route("/locations/<int:location_id>", methods=["GET", "PUT", "DELETE"])
 @token_required
-def location_detail(id):
-    
-    if request.method == 'GET':
-        response = requests.get(f"{SERVICE_URLS['locations']}/{id}")
-    elif request.method == 'PUT':
-        response = requests.put(f"{SERVICE_URLS['locations']}/{id}", json=request.json)
-    elif request.method == 'DELETE':
-        response = requests.delete(f"{SERVICE_URLS['locations']}/{id}")    
-    return jsonify(response.json()), response.status_code
+def location_detail(location_id):
+    url = f"{SERVICE_URLS['locations']}/{location_id}"
+    if request.method == "GET":
+        response = requests.get(url)
+    elif request.method == "PUT":
+        response = requests.put(url, json=request.json)
+    else:
+        response = requests.delete(url)
+    return proxy(response)
 
-# DEVICES ----------------------------------------
+
+# ════════════════════════════════════════════════════════════════════════════
+# DEVICES
+# ════════════════════════════════════════════════════════════════════════════
 
 @app.route("/devices", methods=["GET", "POST"])
 @token_required
 def devices():
     if request.method == "GET":
         response = requests.get(f"{SERVICE_URLS['devices']}/", params=request.args)
-        return jsonify(response.json()), response.status_code
-
-    response = requests.post(f"{SERVICE_URLS['devices']}/", json=request.json, headers=request.headers)
-    return jsonify(response.json()), response.status_code
+    else:
+        response = requests.post(f"{SERVICE_URLS['devices']}/", json=request.json)
+    return proxy(response)
 
 
 @app.route("/devices/<int:device_id>", methods=["GET", "PUT", "DELETE"])
 @token_required
-def device_detail(device_id: int):
+def device_detail(device_id):
+    url = f"{SERVICE_URLS['devices']}/{device_id}"
     if request.method == "GET":
-        response = requests.get(f"{SERVICE_URLS['devices']}/{device_id}")
+        response = requests.get(url)
     elif request.method == "PUT":
-        response = requests.put(f"{SERVICE_URLS['devices']}/{device_id}", json=request.json, headers=request.headers)
+        response = requests.put(url, json=request.json)
     else:
-        response = requests.delete(f"{SERVICE_URLS['devices']}/{device_id}", headers=request.headers)
-    return jsonify(response.json()), response.status_code
+        response = requests.delete(url)
+    return proxy(response)
 
-# DEVICE TYPES ----------------------------------------
+
+# ─── Device Types ─────────────────────────────────────────────────────────
 
 @app.route("/device-types", methods=["GET", "POST"])
 @token_required
 def device_types():
     if request.method == "GET":
-        response = requests.get(
-            f"{SERVICE_URLS['device_types']}/",
-            params=request.args
-        )
-        return jsonify(response.json()), response.status_code
-
-    response = requests.post(
-        f"{SERVICE_URLS['device_types']}/",
-        json=request.json,
-        headers=request.headers
-    )
-    return jsonify(response.json()), response.status_code
+        response = requests.get(f"{SERVICE_URLS['device_types']}/", params=request.args)
+    else:
+        response = requests.post(f"{SERVICE_URLS['device_types']}/", json=request.json)
+    return proxy(response)
 
 
 @app.route("/device-types/<int:type_id>", methods=["GET", "PUT", "DELETE"])
 @token_required
-def device_type_detail(type_id: int):
+def device_type_detail(type_id):
+    url = f"{SERVICE_URLS['device_types']}/{type_id}"
     if request.method == "GET":
-        response = requests.get(
-            f"{SERVICE_URLS['device_types']}/{type_id}"
-        )
-
+        response = requests.get(url)
     elif request.method == "PUT":
-        response = requests.put(
-            f"{SERVICE_URLS['device_types']}/{type_id}",
-            json=request.json,
-            headers=request.headers
-        )
-
+        response = requests.put(url, json=request.json)
     else:
-        response = requests.delete(
-            f"{SERVICE_URLS['device_types']}/{type_id}",
-            headers=request.headers
-        )
+        response = requests.delete(url)
+    return proxy(response)
 
-    return jsonify(response.json()), response.status_code
 
-# METRICS ----------------------------------------
+# ════════════════════════════════════════════════════════════════════════════
+# METRICS
+# ════════════════════════════════════════════════════════════════════════════
 
 @app.route("/metrics", methods=["GET", "POST"])
 @token_required
 def metrics():
     if request.method == "GET":
         response = requests.get(f"{SERVICE_URLS['metrics']}/", params=request.args)
-        return jsonify(response.json()), response.status_code
-
-    response = requests.post(f"{SERVICE_URLS['metrics']}/", json=request.json, headers=request.headers)
-    return jsonify(response.json()), response.status_code
+    else:
+        response = requests.post(f"{SERVICE_URLS['metrics']}/", json=request.json)
+    return proxy(response)
 
 
 @app.route("/metrics/<int:metric_id>", methods=["GET", "PUT", "DELETE"])
 @token_required
-def metric_detail(metric_id: int):
+def metric_detail(metric_id):
+    url = f"{SERVICE_URLS['metrics']}/{metric_id}"
     if request.method == "GET":
-        response = requests.get(f"{SERVICE_URLS['metrics']}/{metric_id}")
+        response = requests.get(url)
     elif request.method == "PUT":
-        response = requests.put(f"{SERVICE_URLS['metrics']}/{metric_id}", json=request.json, headers=request.headers)
+        response = requests.put(url, json=request.json)
     else:
-        response = requests.delete(f"{SERVICE_URLS['metrics']}/{metric_id}", headers=request.headers)
-    return jsonify(response.json()), response.status_code
+        response = requests.delete(url)
+    return proxy(response)
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# ALERTS
+# ════════════════════════════════════════════════════════════════════════════
+
+@app.route("/alerts", methods=["GET", "POST"])
+@token_required
+def alerts():
+    if request.method == "GET":
+        response = requests.get(f"{SERVICE_URLS['alerts']}/", params=request.args)
+    else:
+        response = requests.post(f"{SERVICE_URLS['alerts']}/", json=request.json)
+    return proxy(response)
+
+
+@app.route("/alerts/<int:alert_id>", methods=["GET", "PUT", "DELETE"])
+@token_required
+def alert_detail(alert_id):
+    url = f"{SERVICE_URLS['alerts']}/{alert_id}"
+    if request.method == "GET":
+        response = requests.get(url)
+    elif request.method == "PUT":
+        response = requests.put(url, json=request.json)
+    else:
+        response = requests.delete(url)
+    return proxy(response)
+
+
+# ════════════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

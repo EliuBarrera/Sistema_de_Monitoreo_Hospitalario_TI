@@ -1,0 +1,152 @@
+version: "3.9"
+
+services:
+  # ─── Base de datos PostgreSQL compartida ───────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: hospital_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hospital_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hospital_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-hospital_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - hospital_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hospital_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Auth Service (puerto 5001) ────────────────────────────────────────────
+  auth_service:
+    build: ./backend/auth_service
+    container_name: auth_service
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hospital_user}:${POSTGRES_PASSWORD:-hospital_pass}@db:5432/${POSTGRES_DB:-hospital_db}
+      SECRET_KEY: ${SECRET_KEY:-supersecretkey}
+      USERS_SERVICE_URL: http://users_service:5002
+    ports:
+      - "5001:5001"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hospital_net
+
+  # ─── Users Service (puerto 5002) ───────────────────────────────────────────
+  users_service:
+    build: ./backend/users_service
+    container_name: users_service
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hospital_user}:${POSTGRES_PASSWORD:-hospital_pass}@db:5432/${POSTGRES_DB:-hospital_db}
+      SECRET_KEY: ${SECRET_KEY:-supersecretkey}
+    ports:
+      - "5002:5002"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hospital_net
+
+  # ─── Devices Service (puerto 5003) ─────────────────────────────────────────
+  devices_service:
+    build: ./backend/devices_service
+    container_name: devices_service
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hospital_user}:${POSTGRES_PASSWORD:-hospital_pass}@db:5432/${POSTGRES_DB:-hospital_db}
+      SECRET_KEY: ${SECRET_KEY:-supersecretkey}
+    ports:
+      - "5003:5003"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hospital_net
+
+  # ─── Locations Service (puerto 5004) ───────────────────────────────────────
+  locations_service:
+    build: ./backend/locations_service
+    container_name: locations_service
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hospital_user}:${POSTGRES_PASSWORD:-hospital_pass}@db:5432/${POSTGRES_DB:-hospital_db}
+      SECRET_KEY: ${SECRET_KEY:-supersecretkey}
+    ports:
+      - "5004:5004"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hospital_net
+
+  # ─── Metrics Service (puerto 5005) ─────────────────────────────────────────
+  metrics_service:
+    build: ./backend/metrics_service
+    container_name: metrics_service
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hospital_user}:${POSTGRES_PASSWORD:-hospital_pass}@db:5432/${POSTGRES_DB:-hospital_db}
+      SECRET_KEY: ${SECRET_KEY:-supersecretkey}
+    ports:
+      - "5005:5005"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hospital_net
+
+  # ─── Alerts Service (puerto 5006) ──────────────────────────────────────────
+  alerts_service:
+    build: ./backend/alerts_service
+    container_name: alerts_service
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hospital_user}:${POSTGRES_PASSWORD:-hospital_pass}@db:5432/${POSTGRES_DB:-hospital_db}
+      SECRET_KEY: ${SECRET_KEY:-supersecretkey}
+    ports:
+      - "5006:5006"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hospital_net
+
+  # ─── API Gateway (puerto 5000) ─────────────────────────────────────────────
+  gateway:
+    build: ./backend/gateway
+    container_name: gateway
+    restart: unless-stopped
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-supersecretkey}
+      AUTH_SERVICE_URL: http://auth_service:5001
+      USERS_SERVICE_URL: http://users_service:5002
+      DEVICES_SERVICE_URL: http://devices_service:5003
+      LOCATIONS_SERVICE_URL: http://locations_service:5004
+      METRICS_SERVICE_URL: http://metrics_service:5005
+      ALERTS_SERVICE_URL: http://alerts_service:5006
+    ports:
+      - "5000:5000"
+    depends_on:
+      - auth_service
+      - users_service
+      - devices_service
+      - locations_service
+      - metrics_service
+      - alerts_service
+    networks:
+      - hospital_net
+
+volumes:
+  pgdata:
+
+networks:
+  hospital_net:
+    driver: bridge
