@@ -5,3 +5,4 @@ requests
 PyJWT
 Werkzeug
 python-dotenv
+flask-cors
