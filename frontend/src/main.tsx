@@ -14,6 +14,9 @@ import {
 } from "@/contexts/AuthContext";
 
 const queryClient = new QueryClient();
+const theme = localStorage.getItem("theme") || "light";
+
+document.documentElement.classList.add(theme);
 
 ReactDOM.createRoot(
   document.getElementById("root")!

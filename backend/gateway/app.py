@@ -16,7 +16,7 @@ CORS(
     app,
     resources={
         r"/*": {
-            "origins": "http://localhost:5174"
+            "origins": "http://localhost:5173"
         }
     }
 )
@@ -158,6 +158,15 @@ def login():
             "status_code": response.status_code,
             "response": response.text
         }), 500
+
+# MIX USERS - AUTH ----------------------------------------
+
+@app.route("/users", methods=["GET"])
+@token_required
+def get_all_users():
+    if request.method == "GET":
+        response = requests.get(f"{SERVICE_URLS['auth']}/users")
+        return jsonify(response.json()), response.status_code
 
 # USERS ----------------------------------------    
 
