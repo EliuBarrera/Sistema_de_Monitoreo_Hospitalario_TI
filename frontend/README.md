@@ -1,73 +1,190 @@
-# React + TypeScript + Vite
+# Frontend - Sistema de Monitoreo Hospitalario
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend desarrollado con React, TypeScript, Vite y ShadCN UI para el sistema de monitoreo hospitalario.  
+Porque claramente dormir tranquilo no era suficiente y ahora necesitamos dashboards en tiempo real para todo.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+# Tecnologías utilizadas
 
-## React Compiler
+- React
+- TypeScript
+- Vite
+- Bun
+- TailwindCSS v4
+- ShadCN UI
+- Axios
+- React Router DOM
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+# Requisitos previos
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Antes de ejecutar el proyecto asegúrese de tener instalado:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js >= 20
+- Bun
+- Git
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Instalación
+
+## 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/EliuBarrera/Sistema_de_Monitoreo_Hospitalario_TI.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 2. Ingresar a la carpeta del frontend
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd REPOSITORIO/frontend
 ```
+
+---
+
+## 3. Instalar dependencias
+
+Con Bun:
+
+```bash
+bun install
+```
+
+O con npm:
+
+```bash
+npm install
+```
+
+La humanidad creó 14 gestores de paquetes para resolver el problema de tener 1 gestor de paquetes.
+
+---
+
+# Variables de entorno
+
+Crear un archivo `.env` en la raíz del frontend:
+
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+Reemplace la URL según la dirección donde esté ejecutándose el API Gateway.
+
+---
+
+# Ejecutar el proyecto
+
+Con Bun:
+
+```bash
+bun run dev
+```
+
+Con npm:
+
+```bash
+npm run dev
+```
+
+---
+
+# Acceder al aplicativo
+
+Abrir en el navegador:
+
+```txt
+http://localhost:5173
+```
+
+Si el puerto está ocupado Vite utilizará otro automáticamente.
+
+Porque hasta los puertos tienen problemas de convivencia.
+
+---
+
+# Estructura del proyecto
+
+```txt
+src/
+│
+├── api/              # Servicios HTTP
+├── components/       # Componentes reutilizables
+├── hooks/            # Custom hooks
+├── layouts/          # Layouts generales
+├── pages/            # Páginas principales
+├── routes/           # Configuración de rutas
+├── services/         # Servicios adicionales
+├── types/            # Interfaces y tipados
+└── utils/            # Utilidades
+```
+
+---
+
+# Funcionalidades actuales
+
+- Inicio de sesión
+- Registro de usuarios
+- Manejo de JWT
+- Dashboard administrativo
+- Consumo de microservicios mediante API Gateway
+- Protección de rutas
+- Componentes modernos con ShadCN UI
+
+---
+
+# Solución de errores comunes
+
+## Error: Cannot find module '@/...'
+
+Verifique que exista esta configuración en `tsconfig.json`:
+
+```json
+"baseUrl": ".",
+"paths": {
+  "@/*": ["src/*"]
+}
+```
+
+---
+
+## Error con componentes ShadCN
+
+Reinstalar componentes:
+
+```bash
+bunx --bun shadcn@latest add button input card label checkbox
+```
+
+---
+
+## Error de CORS
+
+Asegúrese de que el API Gateway tenga habilitado CORS:
+
+```python
+from flask_cors import CORS
+
+CORS(app)
+```
+
+---
+
+# Scripts disponibles
+
+```bash
+bun run dev       # Ejecuta entorno de desarrollo
+bun run build     # Genera build de producción
+bun run preview   # Vista previa del build
+```
+
+---
+
+# Autor
+
+Proyecto desarrollado para la asignatura de Desarrollo Orientado a Servicios.
+
+Porque evidentemente hacer un CRUD simple ya no era suficiente sufrimiento académico.
