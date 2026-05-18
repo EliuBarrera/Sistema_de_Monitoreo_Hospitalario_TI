@@ -7,8 +7,6 @@ from controllers.metric_controller import (
     get_metric_by_id,
     update_metric,
 )
-from utils.auth import require_auth
-
 
 metrics_bp = Blueprint("metrics_bp", __name__)
 
@@ -26,7 +24,6 @@ def get_metric(metric_id: int):
 
 
 @metrics_bp.route("/", methods=["POST"])
-@require_auth
 def new_metric():
     data = request.get_json()
     result, status = create_metric(data)
@@ -34,7 +31,6 @@ def new_metric():
 
 
 @metrics_bp.route("/<int:metric_id>", methods=["PUT"])
-@require_auth
 def edit_metric(metric_id: int):
     data = request.get_json()
     result, status = update_metric(metric_id, data)
@@ -42,7 +38,6 @@ def edit_metric(metric_id: int):
 
 
 @metrics_bp.route("/<int:metric_id>", methods=["DELETE"])
-@require_auth
 def remove_metric(metric_id: int):
     result, status = delete_metric(metric_id)
     return jsonify(result), status

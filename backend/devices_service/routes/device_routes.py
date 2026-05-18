@@ -1,6 +1,12 @@
 from flask import Blueprint, jsonify, request
 
-from controllers.device_controller import *
+from controllers.device_controller import (
+    create_device,
+    get_all_devices,
+    get_device_by_id,
+    update_device,
+    delete_device,
+)
 
 
 device_bp = Blueprint("device_bp", __name__)

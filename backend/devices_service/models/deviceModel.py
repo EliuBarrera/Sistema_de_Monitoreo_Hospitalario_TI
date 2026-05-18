@@ -8,7 +8,7 @@ class Device(db.Model):
     name = db.Column(db.String(120), nullable=False)
     serial_number = db.Column(db.String(120), unique=True, nullable=False)
     status = db.Column(db.String(30), nullable=False, default="active")
-    location = db.Column(db.String(120), nullable=True)
+    location_id = db.Column(db.Integer, nullable=True)
     ip_address = db.Column(db.String(45), nullable=True)
 
     device_type_id = db.Column(db.Integer, db.ForeignKey("device_types.id"), nullable=True)
@@ -22,7 +22,7 @@ class Device(db.Model):
             "name": self.name,
             "serial_number": self.serial_number,
             "status": self.status,
-            "location": self.location,
+            "location_id": self.location_id,
             "ip_address": self.ip_address,
             "device_type_id": self.device_type_id,
             "created_at": self.created_at.isoformat() if self.created_at else None,

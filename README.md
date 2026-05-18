@@ -109,6 +109,17 @@ DATABASE_URL=postgresql+psycopg2://postgres:123456@localhost:5432/microservices_
 
 ---
 
+## Ejecutar los microservicios
+
+**Linux:**
+```bash
+chmod +x start_services.sh
+./start_services.sh
+```
+Requiere `tmux`: `sudo apt install tmux`
+
+**Windows:** correr cada `app.py` manualmente por ahora.
+
 ## Mapa de Puertos
 
 | Servicio | Puerto | Prefijo Base |
