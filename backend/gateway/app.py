@@ -4,13 +4,22 @@ from functools import wraps
 import jwt
 from dotenv import load_dotenv
 import os
-
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.json.sort_keys = False
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
+
+CORS(
+    app,
+    resources={
+        r"/*": {
+            "origins": "http://localhost:5174"
+        }
+    }
+)
 
 # Microservice configuration
 SERVICE_URLS = {
