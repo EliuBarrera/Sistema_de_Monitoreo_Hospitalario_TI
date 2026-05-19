@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from controllers.users_controller import (
+from controllers.user_controller import (
     get_all_users, get_user, create_user, update_user, delete_user,
     get_all_roles, create_role
 )
