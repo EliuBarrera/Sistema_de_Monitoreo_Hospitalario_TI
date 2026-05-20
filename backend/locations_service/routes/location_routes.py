@@ -1,11 +1,12 @@
 from flask import Blueprint, jsonify, request
-from controller.location_controller import *
+from controller.location_controller import get_all_locations, get_location, create_location, update_location, delete_location
 
 location_bp = Blueprint('locations_bp', __name__)
 
 @location_bp.route('/locations', methods=['GET'])
 def get_locations_route():
-    return jsonify(get_all_locations())
+    result, status_code = get_all_locations()
+    return jsonify(result), status_code
 
 @location_bp.route('/locations/<id>', methods=['GET'])
 def get_location_route(id):

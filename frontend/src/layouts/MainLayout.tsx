@@ -6,6 +6,9 @@ import BottomDock, { type NavItem } from "@/components/ui/BottomDock";
 const NAV_ITEMS: NavItem[] = [
   { id: "dashboard", label: "Dashboard", icon: "LayoutDashboard", path: "/dashboard"  },
   { id: "users",     label: "Usuarios",  icon: "Users",           path: "/users"      },
+  { id: "locations", label: "Locations", icon: "MapPin",          path: "/locations"  },
+  // { id: "devices",   label: "Devices",   icon: "Server",       path: "/devices"    },
+  // { id: "alerts",    label: "Alertas",   icon: "BellRing",   path: "/alerts"     },
   { id: "logout",    label: "Salir",     icon: "LogOut",          path: "/login"      },
 ];
 
