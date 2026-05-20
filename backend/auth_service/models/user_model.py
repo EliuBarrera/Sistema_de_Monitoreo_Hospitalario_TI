@@ -10,6 +10,13 @@ class Role(db.Model):
 
     users = db.relationship("User", back_populates="role")
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description
+        }
+
 class User(db.Model):
     __tablename__ = "users"
 
@@ -22,3 +29,14 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     role = db.relationship("Role", back_populates="users")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "role_id": self.role_id,
+            "is_active": self.is_active,
+            "created_at": self.created_at.isoformat(),
+            "role": self.role.to_dict() if self.role else None
+        }

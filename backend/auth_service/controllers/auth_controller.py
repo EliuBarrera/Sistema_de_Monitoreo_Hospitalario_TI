@@ -58,3 +58,11 @@ def login(data):
         "user_id": user.id,
         "role": role.name
     }, 200
+
+def get_all_users():
+    users = User.query.all()
+    return [user.to_dict() for user in users], 200
+
+def get_all_roles():
+    roles = Role.query.all()
+    return [role.to_dict() for role in roles], 200
