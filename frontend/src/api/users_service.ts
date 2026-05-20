@@ -15,7 +15,7 @@ export async function getUserById(id: number): Promise<User> {
 }
 
 export async function createUser(data: CreateUserDto) {
-  const response = await api.post("/users", data);
+  const response = await api.post("/auth/register", data);
   return response.data;
 }
 
@@ -29,5 +29,10 @@ export async function updateUser(
 
 export async function deleteUser(id: number) {
   const response = await api.delete(`/users/${id}`);
+  return response.data;
+}
+
+export async function getRoles() {
+  const response = await api.get("/roles");
   return response.data;
 }

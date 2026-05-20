@@ -1,4 +1,4 @@
-// CreateUserPage.tsx
+// CreateUserPage.tsx — sin cambios en estructura, solo pasa showRoleSelect
 import { useNavigate } from "react-router-dom";
 import UserForm from "@/components/users/UserForm";
 import { createUser } from "@/api/users_service";
@@ -19,8 +19,6 @@ function CreateUserPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-28">
-
-      {/* Topbar */}
       <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4">
         <div className="flex items-center gap-3">
           <Button
@@ -52,7 +50,6 @@ function CreateUserPage() {
         </div>
       </header>
 
-      {/* Content */}
       <main className="p-6">
         <div className="
           max-w-xl mx-auto
@@ -60,7 +57,7 @@ function CreateUserPage() {
           border border-slate-200 dark:border-slate-800
           rounded-2xl p-6
         ">
-          <UserForm onSubmit={handleCreate} />
+          <UserForm onSubmit={handleCreate} showRoleSelect={true} />
         </div>
       </main>
     </div>
