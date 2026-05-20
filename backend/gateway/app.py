@@ -168,6 +168,12 @@ def get_all_users():
         response = requests.get(f"{SERVICE_URLS['auth']}/users")
         return jsonify(response.json()), response.status_code
 
+@app.route("/roles", methods=["GET"])
+def get_all_roles():
+    if request.method == "GET":
+        response = requests.get(f"{SERVICE_URLS['auth']}/roles")
+        return jsonify(response.json()), response.status_code           
+
 # USERS ----------------------------------------    
 
 # GET BY ID (GET), UPDATE (PUT), DELETE (DELETE)
