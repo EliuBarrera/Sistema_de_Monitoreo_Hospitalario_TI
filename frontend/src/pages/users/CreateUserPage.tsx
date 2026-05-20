@@ -1,4 +1,4 @@
-// CreateUserPage.tsx — sin cambios en estructura, solo pasa showRoleSelect
+// CreateUserPage.tsx
 import { useNavigate } from "react-router-dom";
 import UserForm from "@/components/users/UserForm";
 import { createUser } from "@/api/users_service";
