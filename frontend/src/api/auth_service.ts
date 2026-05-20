@@ -1,6 +1,6 @@
 import api from "./axios";
 
-import type { LoginData, RegisterData, AuthResponse, Role } from "@/types/Auth";
+import type { LoginData, RegisterData, AuthResponse, Role } from "@/types/Auth/Auth";
 
 export const loginRequest = async (
   data: LoginData

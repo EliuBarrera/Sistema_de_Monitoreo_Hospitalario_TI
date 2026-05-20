@@ -1,8 +1,8 @@
 import api from "./axios";
 
 import type { User } from "@/types/User/User";
-import type { CreateUserDto  } from "@/types/User/CreateUserDto";
-import type { UpdateUserDto } from "@/types/User/UpdateUserDto";
+import type { CreateUserDto  } from "@/types/User/CreateUserDTO";
+import type { UpdateUserDto } from "@/types/User/UpdateUserDTO";
 
 export async function getUsers(): Promise<User[]> {
   const response = await api.get("/users");

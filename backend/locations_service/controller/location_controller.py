@@ -1,10 +1,11 @@
 from sqlalchemy import null
 from models.location_model import Location
 from extensions import db
+from flask import jsonify
 
 def get_all_locations():
     roots = Location.query.filter_by(parent_location_id=None).order_by(Location.id).all()
-    return [serialize_location(location) for location in roots], 200
+    return [serialize_location(loc) for loc in roots], 200
 
 def get_location(location_id):
     location = Location.query.get(location_id)

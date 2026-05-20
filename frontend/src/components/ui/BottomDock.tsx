@@ -7,6 +7,7 @@ import {
   BellRing,
   Users,
   LogOut,
+  HardDrive,
   type LucideIcon
 } from "lucide-react";
 
@@ -35,6 +36,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   BellRing,
   Users,
   LogOut,
+  HardDrive
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
