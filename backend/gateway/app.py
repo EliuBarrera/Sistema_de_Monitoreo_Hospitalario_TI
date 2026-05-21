@@ -23,13 +23,13 @@ CORS(
 
 # Microservice configuration
 SERVICE_URLS = {
-    "auth": "http://localhost:5001/auth",
-    "user": "http://localhost:5002/users",
-    "devices": "http://localhost:5003/devices",
-    "device_types": "http://localhost:5003/device-types",
-    "locations": "http://localhost:5004/locations",
-    "metrics": "http://localhost:5005/metrics",
-    "alerts": "http://localhost:5006/alerts",
+    "auth": os.getenv("AUTH_URL", "http://localhost:5001/auth"),
+    "user": os.getenv("USERS_URL", "http://localhost:5002/users"),
+    "devices": os.getenv("DEVICES_URL", "http://localhost:5003/devices"),
+    "device_types": os.getenv("DEVICE_TYPES_URL", "http://localhost:5003/device-types"),
+    "locations": os.getenv("LOCATIONS_URL", "http://localhost:5004/locations"),
+    "metrics": os.getenv("METRICS_URL", "http://localhost:5005/metrics"),
+    "alerts": os.getenv("ALERTS_URL", "http://localhost:5006/alerts"),
 }
 
 # ── Helpers de enriquecimiento ────────────────────────────────────────────────
@@ -416,4 +416,4 @@ def alert_detail(alert_id: int):
 
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

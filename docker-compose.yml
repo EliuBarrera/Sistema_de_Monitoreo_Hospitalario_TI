@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: microservices_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  auth_service:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: auth_service
+    restart: always
+    command: python backend/auth_service/app.py
+    ports:
+      - "5001:5001"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:12345@db:5432/microservices_db
+      SECRET_KEY: ${SECRET_KEY:-super_secret_key_default}
+
+  users_service:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: users_service
+    restart: always
+    command: python backend/users_service/app.py
+    ports:
+      - "5002:5002"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:12345@db:5432/microservices_db
+
+  devices_service:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: devices_service
+    restart: always
+    command: python backend/devices_service/app.py
+    ports:
+      - "5003:5003"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:12345@db:5432/microservices_db
+
+  locations_service:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: locations_service
+    restart: always
+    command: python backend/locations_service/app.py
+    ports:
+      - "5004:5004"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:12345@db:5432/microservices_db
+
+  metrics_service:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: metrics_service
+    restart: always
+    command: python backend/metrics_service/app.py
+    ports:
+      - "5005:5005"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:12345@db:5432/microservices_db
+
+  alerts_service:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: alerts_service
+    restart: always
+    command: python backend/alerts_service/app.py
+    ports:
+      - "5006:5006"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:12345@db:5432/microservices_db
+
+  gateway:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: gateway
+    restart: always
+    command: python backend/gateway/app.py
+    ports:
+      - "5000:5000"
+    depends_on:
+      - auth_service
+      - users_service
+      - devices_service
+      - locations_service
+      - metrics_service
+      - alerts_service
+    environment:
+      AUTH_URL: http://auth_service:5001/auth
+      USERS_URL: http://users_service:5002/users
+      DEVICES_URL: http://devices_service:5003/devices
+      DEVICE_TYPES_URL: http://devices_service:5003/device-types
+      LOCATIONS_URL: http://locations_service:5004/locations
+      METRICS_URL: http://metrics_service:5005/metrics
+      ALERTS_URL: http://alerts_service:5006/alerts
+      SECRET_KEY: ${SECRET_KEY:-super_secret_key_default}
