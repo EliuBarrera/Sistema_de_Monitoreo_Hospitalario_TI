@@ -14,7 +14,7 @@ function RegisterPage() {
     username: "",
     email: "",
     password: "",
-    role_id: 5,
+    role_id: 1,
     is_active: true,
     created_at: new Date().toISOString(),
   });

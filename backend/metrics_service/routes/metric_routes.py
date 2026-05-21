@@ -6,6 +6,7 @@ from controllers.metric_controller import (
     get_all_metrics,
     get_metric_by_id,
     update_metric,
+    get_metrics_by_device,
 )
 
 metrics_bp = Blueprint("metrics_bp", __name__)
@@ -41,4 +42,10 @@ def edit_metric(metric_id: int):
 def remove_metric(metric_id: int):
     result, status = delete_metric(metric_id)
     return jsonify(result), status
+
+@metrics_bp.route("/device/<int:device_id>", methods=["GET"])
+def get_device_metrics(device_id: int):
+    result, status = get_metrics_by_device(device_id)
+    return jsonify(result), status
+
 

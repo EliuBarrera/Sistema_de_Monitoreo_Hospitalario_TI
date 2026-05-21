@@ -1,6 +1,6 @@
 // UsersPage.tsx
 import { useNavigate } from "react-router-dom";
-import UserTable from "@/components/users/UserTable";
+import UserTable from "@/components/Users/UserTable";
 import { useUsers } from "@/hooks/useUsers";
 import { Button } from "@/components/ui/button";
 import { Users, UserPlus, Loader2 } from "lucide-react";

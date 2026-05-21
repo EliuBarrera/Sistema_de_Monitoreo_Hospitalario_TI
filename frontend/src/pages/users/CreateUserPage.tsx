@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import UserForm from "@/components/users/UserForm";
+import UserForm from "@/components/Users/UserForm";
 import { createUser } from "@/api/users_service";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, UserPlus } from "lucide-react";

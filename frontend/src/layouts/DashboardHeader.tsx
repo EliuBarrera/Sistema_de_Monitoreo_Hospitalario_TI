@@ -153,17 +153,20 @@ function DashboardHeader({
           size="icon"
           onClick={toggleTheme}
           className="
+            rounded-full
+            w-10
+            h-10
             border-slate-700
             bg-transparent
+            hover:bg-slate-800
+            transition-colors
           "
         >
-
           {darkMode ? (
             <Sun className="w-4 h-4" />
           ) : (
             <Moon className="w-4 h-4" />
           )}
-
         </Button>
 
       </div>

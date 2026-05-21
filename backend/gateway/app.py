@@ -326,6 +326,13 @@ def metric_detail(metric_id: int):
 
     return jsonify(_enrich_metric(response.json())), 200
 
+@app.route("/metrics/device/<int:device_id>", methods=["GET"])
+@token_required
+def metrics_by_device(device_id: int):
+    response = requests.get(f"{SERVICE_URLS['metrics']}/device/{device_id}", timeout=5)
+    if response.status_code != 200:
+        return jsonify(response.json()), response.status_code
+    return jsonify(_enrich_metrics(response.json())), 200
 
 # ALERTS ----------------------------------------
 # ── Rutas alerts ──────────────────────────────────────────────────────────────

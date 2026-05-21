@@ -12,6 +12,8 @@ import LocationsPage from "@/pages/locations/LocationsPage";
 import CreateLocationPage from "@/pages/locations/CreateLocationPage";
 import EditLocationPage from "@/pages/locations/EditLocationPage";
 
+import DevicePage from "@/pages/devices/DevicePage";
+
 import ProtectedRoute from "./ProtectedRoute";
 import MainLayout     from "@/layouts/MainLayout";
 
@@ -41,6 +43,10 @@ function AppRoutes() {
           <Route path="/locations"  element={<LocationsPage />} />
           <Route path="/locations/create" element={<CreateLocationPage />} />
           <Route path="/locations/edit/:id" element={<EditLocationPage />} />
+
+          <Route path="/devices" element={<DevicePage />} />
+          {/* <Route path="/devices/create" element={<CreateDevicePage />} />
+          <Route path="/devices/edit/:id" element={<EditDevicePage />} /> */}
         </Route>
 
       </Routes>

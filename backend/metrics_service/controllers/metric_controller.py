@@ -229,3 +229,7 @@ def delete_metric(metric_id: int):
     db.session.delete(metric)
     db.session.commit()
     return {"message": "Métrica eliminada exitosamente"}, 200
+
+def get_metrics_by_device(device_id: int):
+    metrics = Metric.query.filter(Metric.device_id == device_id).all()
+    return [m.to_dict() for m in metrics], 200
